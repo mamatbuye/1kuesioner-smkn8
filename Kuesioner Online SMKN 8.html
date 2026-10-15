@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuesioner Kesadaran Bahaya Narkoba - SMKN 8 Semarang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff;
+        }
+        
+        /* Custom Radio Styling */
+        .radio-card input[type="radio"] { display: none; }
+        .radio-card label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #475569;
+            background: white;
+            height: 100%;
+        }
+        .radio-card input[type="radio"]:checked + label {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+        .radio-card label:hover {
+            border-color: #bfdbfe;
+            background-color: #f8fafc;
+        }
+
+        /* Spinner */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #ffffff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl relative">
+        
+        <!-- ========================================== -->
+        <!-- VIEW 1: FORM KUESIONER                     -->
+        <!-- ========================================== -->
+        <div id="view-form" class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <!-- Header -->
+            <div class="bg-blue-600 p-6 text-center text-white relative">
+                <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
+                <h1 class="text-2xl font-bold relative z-10">Kuesioner Kesadaran Bahaya Narkoba</h1>
+                <p class="text-blue-100 mt-2 text-sm sm:text-base relative z-10">Team Pekerjaan Sosial - SMKN 8 Semarang</p>
+            </div>
+
+            <div class="p-6 sm:p-8">
+                <div class="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-xl mb-8 text-sm leading-relaxed">
+                    <strong>Halo teman-teman!</strong> Kami dari Team Pekerjaan Sosial SMKN 8 Semarang memohon kesediaannya mengisi kuesioner ini. Jawaban kalian dijamin kerahasiaannya dan sangat berguna untuk praktik pendataan kami. Terima kasih!
+                </div>
+
+                <form id="main-form" class="space-y-6">
+                    <!-- Data Diri -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+                        <h2 class="font-bold text-slate-700 border-b pb-2 mb-4">Data Responden</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Nama / Inisial</label>
+                                <input type="text" id="in-nama" required class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Masukkan nama">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Kelas / Jurusan</label>
+                                <input type="text" id="in-kelas" required class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: X PS 1">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-sm font-semibold mb-1">Jenis Kelamin</label>
+                                <select id="in-gender" required class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                                    <option value="">-- Pilih Jenis Kelamin --</option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pertanyaan Container -->
+                    <div>
+                        <h2 class="font-bold text-slate-700 mt-8 mb-2">Daftar Pertanyaan</h2>
+                        <p class="text-xs text-slate-500 mb-6">Pilih jawaban yang paling sesuai: <strong>SS</strong> (Sangat Setuju), <strong>S</strong> (Setuju), <strong>TS</strong> (Tidak Setuju), <strong>STS</strong> (Sangat Tidak Setuju).</p>
+                        
+                        <div id="questions-container" class="space-y-6">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Essay -->
+                    <div class="mt-8 border-t pt-6">
+                        <label class="block font-semibold text-slate-800 mb-2">Menurut pendapatmu, kegiatan apa yang efektif di sekolah agar siswa terhindar dari narkoba?</label>
+                        <textarea id="in-essay" required rows="4" class="w-full p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none resize-none" placeholder="Tuliskan pendapatmu di sini..."></textarea>
+                    </div>
+
+                    <!-- Alert / Error Message -->
+                    <div id="error-msg" class="hidden bg-red-50 text-red-600 p-4 rounded-lg text-sm border border-red-200">
+                        Terjadi kesalahan saat menyimpan data.
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="btn-submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center">
+                        <div id="submit-loader" class="loader hidden"></div>
+                        <span id="submit-text">Kirim Jawaban Kuesioner</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: SUCCESS PAGE                       -->
+        <!-- ========================================== -->
+        <div id="view-success" class="hidden bg-white rounded-2xl shadow-xl overflow-hidden p-10 text-center">
+            <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h2 class="text-3xl font-bold text-slate-800 mb-4">Terima Kasih!</h2>
+            <p class="text-slate-600 mb-8">Data jawabanmu telah berhasil dikirim ke database Team Pekerjaan Sosial SMKN 8 Semarang.</p>
+            <button onclick="location.reload()" class="bg-blue-100 text-blue-700 font-semibold px-6 py-3 rounded-lg hover:bg-blue-200 transition">Isi Form Baru</button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: ADMIN DASHBOARD                    -->
+        <!-- ========================================== -->
+        <div id="view-admin" class="hidden bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col" style="min-height: 80vh;">
+            <div class="bg-slate-800 p-6 flex justify-between items-center text-white">
+                <div>
+                    <h2 class="text-xl font-bold">Admin Dashboard</h2>
+                    <p class="text-slate-400 text-sm">Rekap Data Kuesioner - Realtime</p>
+                </div>
+                <button onclick="closeAdmin()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm font-medium transition">Tutup Admin</button>
+            </div>
+            
+            <div class="p-6 flex-grow flex flex-col">
+                <!-- Summary Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                        <div class="text-blue-500 text-sm font-bold">Total Responden</div>
+                        <div id="stat-total" class="text-3xl font-black text-blue-900 mt-1">0</div>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto border border-slate-200 rounded-xl flex-grow">
+                    <table class="min-w-full divide-y divide-slate-200 text-sm">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600">No</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600">Waktu</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600">Nama</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600">Kelas</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600">L/P</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600 whitespace-nowrap">Q1-Q10 (Jawaban)</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600">Saran/Pendapat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-tbody" class="bg-white divide-y divide-slate-200">
+                            <!-- Injected via JS -->
+                            <tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">Memuat data dari Firebase...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER & ADMIN TRIGGER -->
+    <footer class="text-center py-6 text-slate-400 text-xs mt-auto">
+        <p>&copy; 2026 Team Pekerjaan Sosial SMKN 8 Semarang.</p>
+        <button onclick="openPasswordModal()" class="mt-2 hover:text-slate-600 underline cursor-pointer bg-transparent border-none">Admin</button>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- PASSWORD MODAL (No prompt/alert used)      -->
+    <!-- ========================================== -->
+    <div id="modal-password" class="hidden fixed inset-0 bg-slate-900 bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm transform transition-all">
+            <h3 class="text-lg font-bold text-slate-800 mb-2">Akses Admin</h3>
+            <p class="text-sm text-slate-500 mb-4">Masukkan password untuk melihat rekap data.</p>
+            <input type="password" id="in-password" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none mb-4" placeholder="Password...">
+            <div id="pass-error" class="hidden text-red-500 text-xs mb-4 font-medium">Password salah! Coba lagi.</div>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closePasswordModal()" class="px-4 py-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg font-medium transition">Batal</button>
+                <button onclick="checkPassword()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition">Masuk</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE & LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Environment Setup
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'smkn8-narkoba-app';
+        let firebaseConfig = {};
+        if (typeof __firebase_config !== 'undefined') {
+            try { firebaseConfig = JSON.parse(__firebase_config); } catch(e) {}
+        }
+
+        // State
+        let app, auth, db;
+        let isAuthReady = false;
+        let unsubscribeAdmin = null;
+
+        // Pertanyaan
+        const questions = [
+            "Saya memahami dengan jelas apa yang dimaksud dengan narkoba dan jenis zat terlarang.",
+            "Saya mengetahui dampak buruk jangka panjang penyalahgunaan narkoba terhadap kesehatan mental dan fisik.",
+            "Saya merasa pihak sekolah telah memberikan edukasi yang cukup mengenai bahaya narkoba.",
+            "Jika ada yang menawari zat terlarang, saya berani dan tahu cara menolaknya dengan tegas.",
+            "Saya mengetahui ke mana harus melapor jika melihat indikasi penyalahgunaan narkoba di sekolah.",
+            "Pergaulan teman sebaya sangat memengaruhi keputusan remaja mencoba/menghindari narkoba.",
+            "Saya merasa lingkungan pertemanan saya bebas dari pengaruh negatif zat terlarang.",
+            "Remaja dengan masalah keluarga atau stres belajar lebih rentan terjerumus narkoba.",
+            "Saya mendukung sekolah mengadakan kampanye antinarkoba yang melibatkan siswa.",
+            "Sebagai siswa, saya merasa memiliki tanggung jawab mengedukasi teman tentang bahaya narkoba."
+        ];
+
+        // 1. Initialize UI
+        const qContainer = document.getElementById('questions-container');
+        questions.forEach((q, index) => {
+            const num = index + 1;
+            const html = `
+                <div class="bg-white p-4 sm:p-5 border border-slate-200 rounded-xl shadow-sm">
+                    <div class="font-medium text-slate-800 mb-4 flex items-start">
+                        <span class="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-3 shrink-0 mt-0.5">${num}</span>
+                        <span>${q}</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <div class="radio-card">
+                            <input type="radio" id="q${num}_ss" name="q${num}" value="SS" required>
+                            <label for="q${num}_ss">Sangat Setuju</label>
+                        </div>
+                        <div class="radio-card">
+                            <input type="radio" id="q${num}_s" name="q${num}" value="S" required>
+                            <label for="q${num}_s">Setuju</label>
+                        </div>
+                        <div class="radio-card">
+                            <input type="radio" id="q${num}_ts" name="q${num}" value="TS" required>
+                            <label for="q${num}_ts">Tidak Setuju</label>
+                        </div>
+                        <div class="radio-card">
+                            <input type="radio" id="q${num}_sts" name="q${num}" value="STS" required>
+                            <label for="q${num}_sts">Sangat Tidak Setuju</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+            qContainer.innerHTML += html;
+        });
+
+        // 2. Initialize Firebase
+        async function initFirebase() {
+            if (Object.keys(firebaseConfig).length === 0) return; // Wait for real env
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                isAuthReady = true;
+                console.log("Firebase & Auth Ready!");
+            } catch (error) {
+                console.error("Firebase init failed:", error);
+            }
+        }
+        initFirebase();
+
+        // 3. Handle Form Submit
+        document.getElementById('main-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            const loader = document.getElementById('submit-loader');
+            const txt = document.getElementById('submit-text');
+            const errMsg = document.getElementById('error-msg');
+            
+            if (!isAuthReady) {
+                errMsg.innerText = "Sistem database belum siap. Mohon tunggu beberapa detik dan coba lagi.";
+                errMsg.classList.remove('hidden');
+                return;
+            }
+
+            // UI Loading
+            btn.disabled = true;
+            btn.classList.add('opacity-75');
+            loader.classList.remove('hidden');
+            txt.innerText = 'Menyimpan...';
+            errMsg.classList.add('hidden');
+
+            // Collect Data
+            let answers = [];
+            for (let i = 1; i <= 10; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                answers.push(selected ? selected.value : '-');
+            }
+
+            const payload = {
+                nama: document.getElementById('in-nama').value,
+                kelas: document.getElementById('in-kelas').value,
+                gender: document.getElementById('in-gender').value,
+                jawaban: answers, // Array of 10 answers
+                saran: document.getElementById('in-essay').value,
+                timestamp: serverTimestamp(),
+                userId: auth.currentUser.uid
+            };
+
+            try {
+                // RULE 1: Use strict public path for responses
+                const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'responses');
+                await addDoc(colRef, payload);
+                
+                // Show Success
+                document.getElementById('view-form').classList.add('hidden');
+                document.getElementById('view-success').classList.remove('hidden');
+                window.scrollTo(0,0);
+            } catch (error) {
+                console.error("Gagal simpan:", error);
+                errMsg.innerText = "Gagal menyimpan data ke server. Silakan coba lagi.";
+                errMsg.classList.remove('hidden');
+            } finally {
+                // Reset UI Loading
+                btn.disabled = false;
+                btn.classList.remove('opacity-75');
+                loader.classList.add('hidden');
+                txt.innerText = 'Kirim Jawaban Kuesioner';
+            }
+        });
+
+        // 4. Admin Dashboard Logic
+        window.openPasswordModal = () => {
+            document.getElementById('modal-password').classList.remove('hidden');
+            document.getElementById('in-password').value = '';
+            document.getElementById('pass-error').classList.add('hidden');
+            document.getElementById('in-password').focus();
+        };
+
+        window.closePasswordModal = () => {
+            document.getElementById('modal-password').classList.add('hidden');
+        };
+
+        window.checkPassword = () => {
+            const pass = document.getElementById('in-password').value;
+            if (pass === 'smkn8') {
+                closePasswordModal();
+                showAdminView();
+            } else {
+                document.getElementById('pass-error').classList.remove('hidden');
+            }
+        };
+
+        window.closeAdmin = () => {
+            if(unsubscribeAdmin) {
+                unsubscribeAdmin(); // Stop listening to database when closed
+                unsubscribeAdmin = null;
+            }
+            document.getElementById('view-admin').classList.add('hidden');
+            document.getElementById('view-form').classList.remove('hidden');
+            document.getElementById('view-success').classList.add('hidden');
+        };
+
+        function showAdminView() {
+            document.getElementById('view-form').classList.add('hidden');
+            document.getElementById('view-success').classList.add('hidden');
+            document.getElementById('view-admin').classList.remove('hidden');
+            
+            if (!isAuthReady) return;
+
+            const tbody = document.getElementById('admin-tbody');
+            const totalEl = document.getElementById('stat-total');
+            
+            const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'responses');
+            
+            // RULE 2: No complex queries. Fetch all, sort in JS memory.
+            unsubscribeAdmin = onSnapshot(colRef, (snapshot) => {
+                let records = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    records.push({ id: doc.id, ...data });
+                });
+
+                // Sort by timestamp descending (newest first)
+                records.sort((a, b) => {
+                    const timeA = a.timestamp ? a.timestamp.toMillis() : Date.now();
+                    const timeB = b.timestamp ? b.timestamp.toMillis() : Date.now();
+                    return timeB - timeA;
+                });
+
+                totalEl.innerText = records.length;
+                
+                if (records.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">Belum ada data yang masuk.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                records.forEach((rec, idx) => {
+                    // Format Date
+                    let dateStr = 'Baru saja';
+                    if (rec.timestamp) {
+                        const d = rec.timestamp.toDate();
+                        dateStr = d.toLocaleString('id-ID', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+                    }
+
+                    // Format Answers Array string
+                    const ansStr = rec.jawaban ? rec.jawaban.join(', ') : '-';
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition";
+                    tr.innerHTML = `
+                        <td class="px-4 py-3 border-t text-slate-600">${idx + 1}</td>
+                        <td class="px-4 py-3 border-t text-slate-500 text-xs">${dateStr}</td>
+                        <td class="px-4 py-3 border-t font-medium text-slate-800">${rec.nama}</td>
+                        <td class="px-4 py-3 border-t text-slate-600">${rec.kelas}</td>
+                        <td class="px-4 py-3 border-t text-slate-600">${rec.gender}</td>
+                        <td class="px-4 py-3 border-t text-slate-600 text-xs tracking-wider font-mono bg-slate-50">${ansStr}</td>
+                        <td class="px-4 py-3 border-t text-slate-600 text-sm italic max-w-xs truncate" title="${rec.saran}">${rec.saran}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            }, (error) => {
+                console.error("Error fetching data:", error);
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-red-500">Error membaca database. Pastikan koneksi internet stabil.</td></tr>`;
+            });
+        }
+    </script>
+</body>
+</html>
